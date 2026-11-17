@@ -223,7 +223,7 @@ Running **Section 19** will automatically log your experiment configuration and 
 ---
 
 ## 👥 Authors & Academic Context
-- **Authors**: Viseth ([@Viseth101](https://github.com/Viseth101)), sotheasokea ([@sotheasokea](https://github.com/sotheasokea))
+- **Authors**: Udtarakviseth Lay ([@Viseth101](https://github.com/Viseth101)), Sothea Sokea ([@sotheasokea](https://github.com/sotheasokea))
 - **Course**: Machine Learning (Lab & Term Project Assignment)
 - **Year & Semester**: Year 3 (Junior), Semester 1
 - **Institution**: Silpakorn University

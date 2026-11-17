@@ -1,11 +1,11 @@
 cff-version: 1.2.0
-message: "If you use this code, please cite it as below. The accompanying paper has been submitted to AUCC 2026."
+message: "If you use this code, please cite it as below. The accompanying paper has been submitted to AUCC 2027."
 title: "A Comparative Study of Feature Reduction Strategies and Machine Learning Classifiers for Industrial Fault Detection"
 type: software
 authors:
-  - name: "Viseth"
+  - name: "Udtarakviseth Lay"
     alias: "Viseth101"
-  - name: "sotheasokea"
+  - name: "Sothea Sokea"
     alias: "sotheasokea"
 repository-code: "https://github.com/Viseth101/AUCC-Paper-Machine-Failure-Classification"
 license: MIT
