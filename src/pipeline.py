@@ -1496,12 +1496,12 @@ run_summary_lines = [
 report_text = "\n".join(run_summary_lines)
 
 # 2. Append to cumulative text log (keeps history of all configurations you test!)
-log_txt_path = "./Report/experiment_runs_log.txt"
+log_txt_path = "../results/experiment_runs_log.txt"
 with open(log_txt_path, "a", encoding="utf-8") as f:
     f.write(report_text)
 
 # 3. Save a clean single-run Markdown report for easy reading in VS Code
-md_path = "./Report/latest_experiment_report.md"
+md_path = "../results/latest_experiment_report.md"
 with open(md_path, "w", encoding="utf-8") as f:
     f.write(f"# Experiment Summary Report ({timestamp})\n\n```text\n{report_text}\n```\n")
 

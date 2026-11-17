@@ -4,7 +4,9 @@
 
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
 [![Scikit-Learn](https://img.shields.io/badge/scikit--learn-1.0%2B-orange.svg)](https://scikit-learn.org/)
-[![License](https://img.shields.io/badge/License-Academic-green.svg)]()
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
+
+> 📄 **Paper**: *A Comparative Study of Feature Reduction Strategies and Machine Learning Classifiers for Industrial Fault Detection* — submitted to AUCC. If you use this code, please cite it via [`CITATION.cff`](./CITATION.cff).
 
 ---
 
@@ -141,6 +143,10 @@ The winning Gradient Boosting model and the Stacking Ensemble were refit on the 
 | **Gradient Boosting (Winner)** | **All 6 Sensors** | **0.8132** | **72.55%** | **92.50%** | **86.17%** | **14 / 51** | **3 / 1,449** |
 | Stacking Ensemble (Top 3) | All 6 Sensors | 0.7912 | 70.59% | 90.00% | 85.16% | 15 / 51 | 4 / 1,449 |
 
+![Best validation performance by feature-selection method](./figures/feature_method_comparison.png)
+
+*Validation F1, recall and precision of the best default model for each feature-selection method. More figures are in [`figures/`](./figures/).*
+
 ---
 
 ## 💡 Key Engineering Takeaways
@@ -162,12 +168,24 @@ The winning Gradient Boosting model and the Stacking Ensemble were refit on the 
 ## 📁 Repository Structure
 
 ```text
-ML_Term_Project/
-├── Predictive_Maintenance_Version 2_Res.ipynb  # Master Jupyter Notebook containing full pipeline
-├── Report/
-│   ├── latest_experiment_report.md             # Auto-generated summary of the latest experiment run
-│   └── experiment_runs_log.txt                 # Cumulative run history log across different configs
-└── README.md                                   # Comprehensive project documentation
+AUCC-Paper-Machine-Failure-Classification/
+├── notebooks/
+│   └── predictive_maintenance.ipynb   # Master Jupyter Notebook containing full pipeline
+├── src/
+│   └── pipeline.py                    # Cell-by-cell script export of the notebook (# %% cells)
+├── results/
+│   ├── latest_experiment_report.md    # Auto-generated summary of the latest experiment run
+│   └── experiment_runs_log.txt        # Cumulative run history log across different configs
+├── figures/                           # Plots exported from the notebook
+│   ├── feature_method_comparison.png
+│   ├── final_test_confusion_matrices.png
+│   └── precision_recall_curve.png
+├── data/
+│   └── README.md                      # How the dataset is fetched (no raw data committed)
+├── requirements.txt
+├── CITATION.cff
+├── LICENSE
+└── README.md                          # Comprehensive project documentation
 ```
 
 ---
@@ -179,14 +197,16 @@ ML_Term_Project/
 - Standard data science libraries:
 
 ```bash
-pip install numpy pandas matplotlib seaborn scikit-learn kagglehub
+pip install -r requirements.txt
 ```
 
 ### Running the Notebook
 1. Clone or open this repository in your local environment or VS Code.
-2. Open [`Predictive_Maintenance_Version 2_Res.ipynb`](./Predictive_Maintenance_Version%202_Res.ipynb).
-3. The dataset is automatically fetched via `kagglehub`.
+2. Open [`notebooks/predictive_maintenance.ipynb`](./notebooks/predictive_maintenance.ipynb).
+3. The dataset is automatically fetched via `kagglehub` (see [`data/README.md`](./data/README.md)).
 4. Run all cells from top to bottom.
+
+[`src/pipeline.py`](./src/pipeline.py) holds the same pipeline as `# %%` cells. Run it in the VS Code Interactive Window or Jupyter, not with plain `python`, because it uses `display()`.
 
 ### Configuring New Experiments
 In **Section 7 (Master Experiment Configuration)** of the notebook, you can customize:
@@ -198,11 +218,12 @@ PCA_VARIANCE       = 0.95         # Cumulative variance retained by PCA
 CV_FOLDS           = 5            # Number of folds for cross-validation
 UNIQUE_FINALIST_MODELS = False    # True = force 3 distinct architectures in finalists
 ```
-Running **Section 19** will automatically log your experiment configuration and results to [`Report/latest_experiment_report.md`](./Report/latest_experiment_report.md) and [`Report/experiment_runs_log.txt`](./Report/experiment_runs_log.txt).
+Running **Section 19** will automatically log your experiment configuration and results to [`results/latest_experiment_report.md`](./results/latest_experiment_report.md) and [`results/experiment_runs_log.txt`](./results/experiment_runs_log.txt).
 
 ---
 
 ## 👥 Authors & Academic Context
+- **Authors**: Viseth ([@Viseth101](https://github.com/Viseth101)), sotheasokea ([@sotheasokea](https://github.com/sotheasokea))
 - **Course**: Machine Learning (Lab & Term Project Assignment)
 - **Year & Semester**: Year 3 (Junior), Semester 1
 - **Institution**: Silpakorn University

@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite it as below. The accompanying paper has been submitted to AUCC 2026."
+title: "A Comparative Study of Feature Reduction Strategies and Machine Learning Classifiers for Industrial Fault Detection"
+type: software
+authors:
+  - name: "Viseth"
+    alias: "Viseth101"
+  - name: "sotheasokea"
+    alias: "sotheasokea"
+repository-code: "https://github.com/Viseth101/AUCC-Paper-Machine-Failure-Classification"
+license: MIT
+date-released: "2026-11-17"
+keywords:
+  - predictive maintenance
+  - feature selection
+  - imbalanced classification
+  - AI4I 2020
