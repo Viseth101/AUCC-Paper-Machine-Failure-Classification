@@ -1,12 +1,18 @@
 # 🛠️ Predictive Maintenance: Machine Failure Classification
 > **Machine Learning Term Project**  
-> *A Comparative Study of Feature Reduction Strategies and Machine Learning Classifiers for Industrial Fault Detection*
+> *A Comparative Benchmark of Feature Reduction Strategies and Classifiers for Imbalanced Machine Failure Detection*
 
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
 [![Scikit-Learn](https://img.shields.io/badge/scikit--learn-1.0%2B-orange.svg)](https://scikit-learn.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 
-> 📄 **Paper**: *A Comparative Study of Feature Reduction Strategies and Machine Learning Classifiers for Industrial Fault Detection* — submitted to AUCC. If you use this code, please cite it via [`CITATION.cff`](./CITATION.cff).
+> 📄 **Paper:** *A Comparative Benchmark of Feature Reduction Strategies and Classifiers for Imbalanced Machine Failure Detection* — Udtarakviseth Lay, Sothea Sokea, Panyanat Aonpong. Submitted to **The 15th Asia Undergraduate Conference on Computing (AUC² / AUCC) 2027**.
+>
+> **Paper results** (seed 2077, held-out test set of 1,500 records): tuned Gradient Boosting reached **F1 0.729** (recall 0.608, 31/51 failures; precision 0.912; 3 false alarms; ROC-AUC 0.973).
+>
+> ⚠️ **Note:** the notebook, script and results below are the earlier course version of this pipeline (different random seed and settings), so their numbers differ from the paper. The final paper pipeline will be added to this repository.
+>
+> If you use this code, please cite it via [`CITATION.cff`](./CITATION.cff).
 
 ---
 
@@ -223,7 +229,7 @@ Running **Section 19** will automatically log your experiment configuration and 
 ---
 
 ## 👥 Authors & Academic Context
-- **Authors**: Udtarakviseth Lay ([@Viseth101](https://github.com/Viseth101)), Sothea Sokea ([@sotheasokea](https://github.com/sotheasokea))
+- **Authors**: Udtarakviseth Lay ([@Viseth101](https://github.com/Viseth101)), Sothea Sokea ([@sotheasokea](https://github.com/sotheasokea)), Panyanat Aonpong (corresponding author)
 - **Course**: Machine Learning (Lab & Term Project Assignment)
 - **Year & Semester**: Year 3 (Junior), Semester 1
 - **Institution**: Silpakorn University
