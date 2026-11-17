@@ -1,171 +1,153 @@
 # 🛠️ Predictive Maintenance: Machine Failure Classification
-> **Machine Learning Term Project**  
 > *A Comparative Benchmark of Feature Reduction Strategies and Classifiers for Imbalanced Machine Failure Detection*
 
-[![Python](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
-[![Scikit-Learn](https://img.shields.io/badge/scikit--learn-1.0%2B-orange.svg)](https://scikit-learn.org/)
+[![Python](https://img.shields.io/badge/Python-3.13-blue.svg)](https://www.python.org/)
+[![Scikit-Learn](https://img.shields.io/badge/scikit--learn-1.7-orange.svg)](https://scikit-learn.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 
-> 📄 **Paper:** *A Comparative Benchmark of Feature Reduction Strategies and Classifiers for Imbalanced Machine Failure Detection* — Udtarakviseth Lay, Sothea Sokea, Panyanat Aonpong. Submitted to **The 15th Asia Undergraduate Conference on Computing (AUC² / AUCC) 2027**.
+> 📄 **Paper:** *A Comparative Benchmark of Feature Reduction Strategies and Classifiers for Imbalanced Machine Failure Detection* — Udtarakviseth Lay, Sothea Sokea, Panyanat Aonpong. **The 15th Asia Undergraduate Conference on Computing (AUC² / AUCC) 2027**.
 >
-> **Paper results** (seed 2077, held-out test set of 1,500 records): tuned Gradient Boosting reached **F1 0.729** (recall 0.608, 31/51 failures; precision 0.912; 3 false alarms; ROC-AUC 0.973).
+> This repository contains the code that produced the paper's results: [`notebooks/paper_pipeline.ipynb`](./notebooks/paper_pipeline.ipynb).
 >
 > If you use this code, please cite it via [`CITATION.cff`](./CITATION.cff).
 
 ---
 
-## 📌 Executive Summary
+## 📌 Summary
 
-Unexpected industrial equipment downtime costs factories billions of dollars annually. While early warning systems are crucial, **machine failures in real-world operations are rare events**, making standard classification metrics like accuracy deceptive.
+Machine failures are rare (3.39% of records in AI4I 2020), so accuracy alone is misleading: always predicting "no failure" already scores 96.61%. We rank models by **failure-class F1** and report recall, precision, missed failures and false alarms directly.
 
-This project delivers a **leak-free, reproducible machine learning pipeline** that:
-1. Evaluates whether reduced sensor subsets can effectively detect industrial machine failures.
-2. Compares **8 feature reduction strategies** (Filter, Embedded, Wrapper, and Dimensionality Reduction methods).
-3. Benchmarks **6 core classifier families** plus a multi-model **Stacking Ensemble**.
-4. Solves severe class imbalance (~3.39% failure rate) by prioritizing **Failure F1-Score**, **Recall** (minimizing costly missed failures), and **Precision** (avoiding false alarms).
+We benchmark **7 feature reduction strategies** (ANOVA, Pearson correlation, adapted Lasso, RFE, Forward SFS, Backward SFS, PCA 95%), plus an **all-6 baseline** and a **Drop Type only** control, against **6 classifiers**: 9 settings × 6 classifiers = **54 combinations**. We use a stratified **70/15/15** train/validation/test split with **seed 2077**, and fit every selector, scaler and PCA on the training split only.
 
-The final champion model—a **fine-tuned Gradient Boosting Classifier** using all 6 physical sensor features—achieved an **F1-Score of 81.32%**, **72.55% Recall**, and **92.50% Precision** on an isolated, untouched test set, producing only **3 false alarms** across 1,500 unseen production instances.
-
----
-
-## 📊 Dataset & Sensor Features
-
-The study utilizes the **AI4I 2020 Predictive Maintenance Dataset** (UCI Machine Learning Repository / Kaggle), consisting of 10,000 synthetic instances reflecting real milling machine operations.
-
-### Target Variable
-- **`Machine failure`** (Binary):
-  - `0`: Normal operation (~96.61% — 9,661 samples)
-  - `1`: Machine failure (~3.39% — 339 samples)
-
-### Usable Sensor Predictors (6 Features)
-| Sensor Feature | Type | Units | Industrial Meaning |
-| :--- | :---: | :---: | :--- |
-| **`Type`** | Categorical | Encoded (0: L, 1: M, 2: H) | Product quality variant (Low 50%, Medium 30%, High 20%) |
-| **`Air temperature [K]`** | Continuous | Kelvin | Ambient factory temperature |
-| **`Process temperature [K]`** | Continuous | Kelvin | Internal machine operating temperature |
-| **`Rotational speed [rpm]`** | Continuous | RPM | Spindle rotational speed |
-| **`Torque [Nm]`** | Continuous | Newton-meters | Torque resistance during operation |
-| **`Tool wear [min]`** | Continuous | Minutes | Cumulative tool cutting time in contact with workpieces |
-
-> [!NOTE]  
-> **Target Leakage Prevention**: Identifiers (`UDI`, `Product ID`) and specific root-cause failure indicators (`TWF`, `HDF`, `PWF`, `OSF`, `RNF`) were strictly excluded from model inputs. In real-time monitoring, specific failure types are unknown prior to diagnosis; including them would leak the target label.
+**Main results:**
+- Every four-feature subset lost F1 against all six inputs; dropping only Type was roughly neutral.
+- Tuning raised the validation F1 of Gradient Boosting from **0.641 to 0.713**.
+- Tuned Gradient Boosting reached a **test F1 of 0.729**: recall 0.608 (31/51), precision 0.912, 3 false alarms, ROC-AUC 0.973, PR-AUC 0.787.
+- Stacking (F1 0.753, 32/51, 2 false alarms) did not clearly beat the single model.
 
 ---
 
-## 🔬 Experimental Methodology
+## 📊 Dataset & Input Features
 
-A rigorous, leak-free experimental design guarantees that evaluation metrics reflect true generalization performance.
+The **AI4I 2020 Predictive Maintenance Dataset** (UCI / Kaggle) has 10,000 synthetic records that imitate a milling machine. The target is `Machine failure`: 339 failures (3.39%) and 9,661 normal records (96.61%).
 
-```mermaid
-flowchart TD
-    A[Raw AI4I 2020 Dataset\n10,000 Records] --> B[Data Cleaning & Preprocessing\nEncode Type & Drop Leaking Columns]
-    B --> C[Stratified 3-Way Split]
-    
-    C -->|70% - 7,000 rows| D[Training Set]
-    C -->|15% - 1,500 rows| E[Validation Set]
-    C -->|15% - 1,500 rows| F[Isolated Test Set\nHidden until final step]
-    
-    D --> G[Feature Selection & Reduction\nFitted strictly on Training split]
-    G --> H[Model Screening\nEvaluate on Validation Set]
-    H --> I[Select Top 3 Architecture Finalists]
-    
-    I --> J[Hyperparameter Tuning\n5-Fold Stratified CV on Training Split]
-    J --> K[Select Tuned Single Winner\non Validation Set]
-    
-    D & E --> L[Combined 85% Development Set\n8,500 rows]
-    K --> M[Refit Winner on Development Set]
-    I --> N[Train Stacking Ensemble on Development Set]
-    
-    M --> O[Final Evaluation on 15% Unseen Test Set]
-    N --> O
-```
+| Feature | Unit | Description |
+| :--- | :---: | :--- |
+| `Type` | – | Product quality variant (L/M/H, encoded 0/1/2) |
+| `Air temperature [K]` | K | Ambient temperature |
+| `Process temperature [K]` | K | Machine operating temperature |
+| `Rotational speed [rpm]` | rpm | Spindle speed |
+| `Torque [Nm]` | Nm | Torque during operation |
+| `Tool wear [min]` | min | Cumulative cutting time |
 
-### 1. Stratified Partitioning
-- **Training Set (70% — 7,000 samples)**: Used exclusively for fitting feature selectors, training initial models, and 5-fold cross-validation.
-- **Validation Set (15% — 1,500 samples)**: The "practice exam"—used to compare feature sets, screen model families, and select the winning hyperparameter configuration.
-- **Test Set (15% — 1,500 samples)**: The "final exam"—completely untouched until after all selection and tuning decisions are frozen.
-- **Development Set (85% — 8,500 samples)**: Once the optimal configuration is locked, Training and Validation data are merged to refit the final model before testing.
-
-### 2. Feature Selection Strategies Compared
-All selectors were constrained to select **4 features** (or 95% variance) for a fair head-to-head comparison:
-- **Baseline**: All 6 raw features (benchmark).
-- **Filter Methods**:
-  - **ANOVA F-Test** (`SelectKBest(f_classif)`): Statistical variance differences between normal and failure states.
-  - **Pearson Correlation**: Absolute linear correlation with the failure label.
-- **Embedded Methods**:
-  - **Adapted Lasso ($L_1$)**: Feature pruning based on sparse $L_1$ logistic regression coefficients.
-  - **Regularization Analysis**: Comparative study of Ridge ($L_2$), Lasso ($L_1$), and Elastic Net ($L_1 + L_2$).
-- **Wrapper Methods**:
-  - **Recursive Feature Elimination (RFE)**: Tested with Logistic Regression, Linear SVC, Decision Tree, and Random Forest.
-  - **Sequential Feature Selector (SFS)**: Forward and Backward greedy selection driven by cross-validated F1 score.
-- **Dimensionality Reduction**:
-  - **PCA**: Retains 95% cumulative variance across 4 orthogonal components.
-
-### 3. Machine Learning Classifiers
-Six diverse algorithm families were benchmarked across each feature set:
-1. **Support Vector Classifier (SVC)** (Linear, Polynomial, RBF kernels)
-2. **Logistic Regression** (with balanced class weights)
-3. **Decision Tree** (Gini impurity / Entropy)
-4. **Random Forest** (Bagging ensemble)
-5. **Gradient Boosting** (Sequential boosting ensemble)
-6. **Multilayer Perceptron (MLP)** (Deep neural network with hidden layers `(64, 16)`)
-7. **Stacking Ensemble** (Meta-classifier combining the top 3 tuned architectures)
+> [!NOTE]
+> **Target leakage prevention:** we drop the identifiers (`UDI`, `Product ID`) and the five failure-mode flags (`TWF`, `HDF`, `PWF`, `OSF`, `RNF`). The flags define the label itself and would not be known before a diagnosis.
 
 ---
 
-## 🏆 Key Results & Performance
+## 🔬 Methodology
 
-### 1. Validation Screening (Top Model per Feature Method)
+![Experimental workflow](./figures/fig1_workflow.png)
 
-| Feature Selection Method | Best Model | Validation F1 | Validation Recall | Validation Precision | Missed Failures (FN) | False Alarms (FP) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **No feature selection (All 6)** | **MLP** | **0.7692** | **0.6863** | **0.8750** | **16** | **5** |
-| RFE (Logistic Regression) | MLP | 0.7021 | 0.6471 | 0.7674 | 18 | 10 |
-| ANOVA Filter | MLP | 0.6742 | 0.5882 | 0.7895 | 21 | 8 |
-| Pearson Correlation | MLP | 0.6742 | 0.5882 | 0.7895 | 21 | 8 |
-| Adapted Lasso ($L_1$) | MLP | 0.6742 | 0.5882 | 0.7895 | 21 | 8 |
-| Forward SFS (Decision Tree) | MLP | 0.6742 | 0.5882 | 0.7895 | 21 | 8 |
-| Backward SFS (Decision Tree)| MLP | 0.6353 | 0.5294 | 0.7941 | 24 | 7 |
-| PCA (95% Variance) | MLP | 0.5000 | 0.3529 | 0.8571 | 33 | 3 |
+*Fig. 1. Feature reduction and tuning are fitted on the training split, while screening and selection are scored on the validation split. The final models are refit on the development set, and the test split is used only after all choices are fixed.*
 
-### 2. Hyperparameter Fine-Tuning (5-Fold Cross-Validation on Top 3 Finalists)
+| Split | Rows | Normal | Failure | Failure (%) |
+| :--- | ---: | ---: | ---: | ---: |
+| Training | 7,000 | 6,763 | 237 | 3.39 |
+| Validation | 1,500 | 1,449 | 51 | 3.40 |
+| Test | 1,500 | 1,449 | 51 | 3.40 |
+| Development (Train + Val) | 8,500 | 8,212 | 288 | 3.39 |
 
-After screening, the top 3 distinct architectures were fine-tuned with 5-fold cross-validation on the training set:
+- **Feature reduction:** every selector keeps **k = 4** features. The adapted Lasso is a standardized L1 logistic regression (C = 0.1) ranked by absolute coefficient. RFE uses a Logistic Regression base. Forward and Backward SFS use a Decision Tree base with 5-fold CV F1. PCA keeps 95% of the training variance (4 components).
+- **Classifiers:** SVC (RBF), Logistic Regression, Decision Tree, Random Forest (200 trees), Gradient Boosting, and MLP (64, 16). SVC, LR and MLP get standardized inputs. SVC, LR, DT and RF use balanced class weights. Everything else uses scikit-learn defaults with `random_state = 2077` and no resampling.
+- **Tuning:** the top 3 combinations are tuned with GridSearchCV (16 combinations each, 5-fold stratified CV on the training split, F1). The tuned model with the best validation F1 is the winner.
+- **Stacking benchmark:** tuned GB (all 6) + tuned GB (Drop Type only) + tuned RF (all 6), with a Logistic Regression meta-model (cv = 5). It is scored only on the test split.
+- **Threshold** fixed at 0.5.
 
-| Architecture | Optimal Hyperparameters | Validation F1 | Validation Recall | Validation Precision |
+---
+
+## 🏆 Results
+
+### Table 3. Selector scores (training split) and the two sensor sets chosen at k = 4
+
+| Feature | ANOVA F | p | \|r\| | \|L1\| | Set A | Set B |
+| :--- | ---: | ---: | ---: | ---: | :---: | :---: |
+| Type | 8.34 | 0.0039 | 0.035 | 0.133 | – | – |
+| Air temp. | 54.55 | <0.001 | 0.088 | 1.116 | Y | Y |
+| Proc. temp. | 7.90 | 0.0050 | 0.034 | 0.729 | – | Y |
+| Rot. speed | 30.91 | <0.001 | 0.066 | 1.706 | Y | Y |
+| Torque | 348.32 | <0.001 | 0.218 | 2.433 | Y | Y |
+| Tool wear | 70.70 | <0.001 | 0.100 | 0.651 | Y | – |
+
+**Set A:** ANOVA, Pearson, Forward SFS (DT base). **Set B:** adapted Lasso, RFE (LR base), Backward SFS (DT base).
+
+### Table 4. Screening: best classifier per feature setting (validation, 51 failures / 1,449 normal)
+
+| Setting | Inputs | Model | F1 | Recall | Precision | Missed | False alarms |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Drop Type only** | 5 | GB | **0.650** | 0.510 | 0.897 | 25 | 3 |
+| All 6 (no selection) | 6 | GB | 0.641 | 0.490 | 0.926 | 26 | 2 |
+| Set B: Lasso / RFE / Backward SFS | 4 | RF | 0.583 | 0.412 | 1.000 | 30 | 0 |
+| Set A: ANOVA / Pearson / Forward SFS | 4 | DT | 0.427 | 0.373 | 0.500 | 32 | 19 |
+| PCA 95% | 4 PCs | GB | 0.389 | 0.275 | 0.667 | 37 | 7 |
+
+<p>
+  <img src="./figures/fig2_validation_f1.png" alt="Best validation F1 per feature setting" width="48%">
+  <img src="./figures/fig3_recall_vs_false_alarms.png" alt="Validation recall versus false alarms" width="48%">
+</p>
+
+*Fig. 2 (left): best validation failure F1 per feature setting. Fig. 3 (right): validation recall versus false alarms for all 30 unique fits (threshold 0.5).*
+
+### Table 5. Tuned finalists
+
+| Candidate | Best parameters | CV F1 (mean ± sd) | Val F1 after tuning | Val missed / FA |
 | :--- | :--- | :---: | :---: | :---: |
-| **Gradient Boosting** | `learning_rate=0.1`, `max_depth=5`, `n_estimators=200`, `subsample=1.0` | **0.7865** | **0.6863** | **0.9211** |
-| **Random Forest** | `n_estimators=200`, `max_depth=None`, `min_samples_leaf=1`, `balanced` | 0.7778 | 0.6863 | 0.8974 |
-| **MLP Neural Network** | `hidden_layer_sizes=(64, 16)`, `alpha=0.001`, `max_iter=1000` | 0.7579 | 0.7059 | 0.8182 |
+| **GB, All 6** | learning rate 0.1, depth 5, 200 trees, subsample 1.0 | 0.767 ± 0.071 | **0.713** | 20 / 5 |
+| GB, Drop Type only | learning rate 0.1, depth 5, 200 trees, subsample 1.0 | 0.738 ± 0.061 | 0.675 | 23 / 4 |
+| RF, All 6 | no class weight, unlimited depth, min. leaf 1, 200 trees | 0.711 ± 0.089 | 0.675 | 24 / 2 |
 
-### 3. Final Unseen Test Set Performance: Single Winner vs. Stacking Ensemble
+Tuning raised the validation F1 of GB on all six inputs from **0.641 to 0.713**, so it was selected as the winner.
 
-The winning Gradient Boosting model and the Stacking Ensemble were refit on the combined 85% development set and evaluated **once** on the 1,500 unseen test samples:
+### Table 6. Robustness: five re-splits of the development set (seeds 11, 22, 33, 44, 66)
 
-| Model Strategy | Input Features | Test F1 | Test Recall | Test Precision | Balanced Acc. | Missed Failures | False Alarms |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Gradient Boosting (Winner)** | **All 6 Sensors** | **0.8132** | **72.55%** | **92.50%** | **86.17%** | **14 / 51** | **3 / 1,449** |
-| Stacking Ensemble (Top 3) | All 6 Sensors | 0.7912 | 70.59% | 90.00% | 85.16% | 15 / 51 | 4 / 1,449 |
+Each seed re-splits the 8,500 development rows into 7,000 train / 1,500 validation. The test set is never used.
 
-![Best validation performance by feature-selection method](./figures/feature_method_comparison.png)
+**(a) Best-classifier validation F1 per setting (mean ± sd)**
 
-*Validation F1, recall and precision of the best default model for each feature-selection method. More figures are in [`figures/`](./figures/).*
+| Setting | F1 | Setting | F1 |
+| :--- | :---: | :--- | :---: |
+| **All 6** | **0.759 ± 0.052** | Forward SFS k=4 | 0.594 ± 0.081 |
+| Drop Type only | 0.739 ± 0.023 | Lasso k=4 | 0.572 ± 0.054 |
+| PCA 99% (6 PCs) | 0.738 ± 0.094 | ANOVA k=4 | 0.552 ± 0.037 |
+| RFE k=4 | 0.683 ± 0.071 | Pearson k=4 | 0.552 ± 0.037 |
+| Backward SFS k=4 | 0.626 ± 0.077 | PCA 95% (4 PCs) | 0.424 ± 0.067 |
+
+**(b) Best F1 by number of retained inputs (GB and MLP)**
+
+| Inputs | 3 | 4 | 5 | 6 | PCA 95% | PCA 99% |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| GB | 0.562 ± 0.024 | 0.645 ± 0.078 | 0.727 ± 0.034 | 0.745 ± 0.041 | 0.361 ± 0.063 | 0.581 ± 0.059 |
+| MLP | 0.515 ± 0.031 | 0.683 ± 0.071 | 0.690 ± 0.054 | 0.746 ± 0.068 | 0.395 ± 0.103 | 0.738 ± 0.094 |
+
+### Table 7. Test set (1,500 records, 51 failures, threshold 0.5)
+
+| Model | TN | FP | FN | TP | F1 | Recall | Precision | Bal. acc. | ROC-AUC | PR-AUC |
+| :--- | ---: | ---: | ---: | ---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Tuned GB (winner)** | 1446 | 3 | 20 | 31 | **0.729** | 0.608 | 0.912 | 0.803 | **0.973** | **0.787** |
+| Stacking (tuned Top 3) | 1447 | 2 | 19 | 32 | 0.753 | 0.627 | 0.941 | 0.813 | 0.962 | 0.746 |
+
+The Wilson 95% CI for the winner's recall (31/51) is [0.471, 0.730], and for Stacking (32/51) it is [0.490, 0.747].
 
 ---
 
-## 💡 Key Engineering Takeaways
+## 💡 Takeaways
 
-1. **Why Full Features Outperformed Feature Reduction**:
-   - Physical machine failures depend on non-linear thermodynamic and mechanical interactions:
-     - **Power Failures (PWF)** depend on the product of `Rotational speed` and `Torque`.
-     - **Heat Dissipation Failures (HDF)** depend on the difference between `Process temperature` and `Air temperature`.
-     - **Overstrain Failures (OSF)** depend on the product of `Tool wear` and `Torque`.
-   - Pruning any of these 6 sensors removes a critical variable required to detect at least one physical failure mode.
-2. **Single Model vs. Stacking Ensemble**:
-   - The tuned **Gradient Boosting Classifier** outperformed the multi-model Stacking Ensemble on unseen test data (F1: 81.32% vs. 79.12%).
-   - In industrial production, a single tree-based model is faster to execute, lighter on inference latency, and simpler to maintain than a multi-architecture ensemble.
-3. **Low False Alarms in Industrial Context**:
-   - Achieving **92.50% Precision** with only **3 false alarms out of 1,449 normal runs** prevents costly unnecessary maintenance shutdowns while capturing over 72% of critical failures before catastrophic breakdowns.
+1. **Every four-feature subset lost F1.** On the validation split, the best subset reached 0.583 against 0.641 for all six inputs. Over five development re-splits, selector subsets reached 0.552–0.683 and PCA 95% reached 0.424, against 0.759. This fits how the data are generated: heat-dissipation failures depend on the process–air temperature difference with low speed, power failures on torque × speed, and overstrain failures on tool wear × torque. Every sensor appears in at least one failure rule.
+2. **Dropping Type was roughly neutral** (0.739 vs 0.759 over five re-splits). Type is a product label, not a sensor.
+3. **The classifiers trade recall for false alarms differently.** At the default threshold, Logistic Regression and SVC (balanced weights) caught 67–86% of failures but raised 96–446 false alarms per 1,449 normal records. Gradient Boosting and Random Forest caught 22–51% with 0–12 false alarms. At equal recall, Gradient Boosting gave the fewest false alarms.
+4. **Stacking did not clearly beat a single model.** It caught one more failure and raised one fewer false alarm, but the confidence intervals overlap almost completely and its ROC-AUC and PR-AUC were lower. A single tuned Gradient Boosting model is the simpler choice to deploy.
+
+These conclusions are limited to one synthetic dataset.
 
 ---
 
@@ -174,55 +156,52 @@ The winning Gradient Boosting model and the Stacking Ensemble were refit on the 
 ```text
 AUCC-Paper-Machine-Failure-Classification/
 ├── notebooks/
-│   └── predictive_maintenance.ipynb   # Master Jupyter Notebook containing full pipeline
-├── src/
-│   └── pipeline.py                    # Cell-by-cell script export of the notebook (# %% cells)
-├── results/
-│   ├── latest_experiment_report.md    # Auto-generated summary of the latest experiment run
-│   └── experiment_runs_log.txt        # Cumulative run history log across different configs
-├── figures/                           # Plots exported from the notebook
-│   ├── feature_method_comparison.png
-│   ├── final_test_confusion_matrices.png
-│   └── precision_recall_curve.png
+│   └── paper_pipeline.ipynb      # Paper pipeline (with outputs)
+├── results/                      # Written by the notebook
+│   ├── full_results_for_paper.txt
+│   ├── screening_all.csv
+│   ├── robustness_dev_only.csv
+│   ├── robustness_summary.txt
+│   ├── threshold_check_val.csv
+│   ├── latest_experiment_report.md
+│   └── experiment_runs_log.txt
+├── figures/
+│   ├── fig1_workflow.png                # Paper Fig. 1
+│   ├── fig2_validation_f1.png           # Paper Fig. 2
+│   ├── fig3_recall_vs_false_alarms.png  # Paper Fig. 3
+│   ├── validation_f1_by_setting.png     # Written by the notebook
+│   └── test_confusion_roc.png           # Written by the notebook
+├── archive/                      # Earlier course-version code (not used for the paper)
 ├── data/
-│   └── README.md                      # How the dataset is fetched (no raw data committed)
+│   └── README.md                 # How the dataset is fetched (no raw data committed)
 ├── requirements.txt
+├── .python-version
 ├── CITATION.cff
 ├── LICENSE
-└── README.md                          # Comprehensive project documentation
+└── README.md
 ```
 
 ---
 
-## 🚀 Getting Started & Reproducibility
+## 🚀 Reproducing the Results
 
-### Prerequisites
-- Python 3.9+
-- Standard data science libraries:
+The paper used Python 3.13.9, scikit-learn 1.7.2, NumPy 2.3.5 and pandas 2.3.3. Other versions may give slightly different numbers.
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Running the Notebook
-1. Clone or open this repository in your local environment or VS Code.
-2. Open [`notebooks/predictive_maintenance.ipynb`](./notebooks/predictive_maintenance.ipynb).
-3. The dataset is automatically fetched via `kagglehub` (see [`data/README.md`](./data/README.md)).
-4. Run all cells from top to bottom.
+1. Open [`notebooks/paper_pipeline.ipynb`](./notebooks/paper_pipeline.ipynb).
+2. The dataset is fetched automatically with `kagglehub` (see [`data/README.md`](./data/README.md)).
+3. Run all cells from top to bottom. Tables and CSVs are written to [`results/`](./results/), and plots to [`figures/`](./figures/).
 
-[`src/pipeline.py`](./src/pipeline.py) holds the same pipeline as `# %%` cells. Run it in the VS Code Interactive Window or Jupyter, not with plain `python`, because it uses `display()`.
+Or run it headless:
 
-### Configuring New Experiments
-In **Section 7 (Master Experiment Configuration)** of the notebook, you can customize:
-```python
-NUMBER_OF_FEATURES = 4            # Number of features to select (ANOVA, Correlation, Lasso, RFE, SFS)
-RFE_SELECTOR_MODEL = "Logistic Regression"  # Base model for RFE
-SFS_SELECTOR_MODEL = "Decision Tree"        # Base model for Forward/Backward SFS
-PCA_VARIANCE       = 0.95         # Cumulative variance retained by PCA
-CV_FOLDS           = 5            # Number of folds for cross-validation
-UNIQUE_FINALIST_MODELS = False    # True = force 3 distinct architectures in finalists
+```bash
+jupyter nbconvert --to notebook --execute --inplace notebooks/paper_pipeline.ipynb
 ```
-Running **Section 19** will automatically log your experiment configuration and results to [`results/latest_experiment_report.md`](./results/latest_experiment_report.md) and [`results/experiment_runs_log.txt`](./results/experiment_runs_log.txt).
+
+The main settings are in **Section 7 (Master Experiment Configuration)** of the notebook: `NUMBER_OF_FEATURES = 4`, `RFE_SELECTOR_MODEL`, `SFS_SELECTOR_MODEL`, `PCA_VARIANCE = 0.95` and `CV_FOLDS = 5`. The main seed is `RANDOM_STATE = 2077` (Section 4), and the robustness seeds are `ROBUST_SEEDS = [11, 22, 33, 44, 66]` (Section 16.3).
 
 ---
 

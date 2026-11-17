@@ -1,0 +1,225 @@
+================================================================================
+0. CONFIGURATION & ENVIRONMENT
+================================================================================
+{
+  "RANDOM_STATE": 2077,
+  "NUMBER_OF_FEATURES": 4,
+  "RFE_SELECTOR_MODEL": "Logistic Regression",
+  "SFS_SELECTOR_MODEL": "Decision Tree",
+  "PCA_VARIANCE": 0.95,
+  "PCA components kept": 4,
+  "CV_FOLDS": 5,
+  "UNIQUE_FINALIST_MODELS": false,
+  "python": "3.13.9",
+  "scikit-learn": "1.7.2",
+  "numpy": "2.3.5",
+  "pandas": "2.3.3"
+}
+
+================================================================================
+1. SPLIT SIZES (row 0 = normal, row 1 = failure)
+================================================================================
+                 Training  Validation  Test  Development (train+val)
+Machine failure                                                     
+0                    6763        1449  1449                     8212
+1                     237          51    51                      288
+Total rows           7000        1500  1500                     8500
+
+================================================================================
+2. PER-SENSOR SELECTOR SCORES (training split)
+================================================================================
+                           ANOVA F  ANOVA p-value  abs Pearson r  abs L1 coef (C=0.1)
+Type                       8.34106        0.00389        0.03450              0.13328
+Air temperature [K]       54.54588        0.00000        0.08794              1.11605
+Process temperature [K]    7.89797        0.00496        0.03358              0.72947
+Rotational speed [rpm]    30.91056        0.00000        0.06631              1.70576
+Torque [Nm]              348.31520        0.00000        0.21775              2.43333
+Tool wear [min]           70.70296        0.00000        0.10001              0.65119
+
+================================================================================
+3. SELECTED SENSORS PER METHOD (Y = kept)
+================================================================================
+                        ANOVA Pearson Adapted Lasso RFE (Logistic Regression) Forward SFS (Decision Tree) Backward SFS (Decision Tree)
+Type                        -       -             -                         -                           -                            -
+Air temperature [K]         Y       Y             Y                         Y                           Y                            Y
+Process temperature [K]     -       -             Y                         Y                           -                            Y
+Rotational speed [rpm]      Y       Y             Y                         Y                           Y                            Y
+Torque [Nm]                 Y       Y             Y                         Y                           Y                            Y
+Tool wear [min]             Y       Y             -                         -                           Y                            -
+
+================================================================================
+3b. RFE with all four base estimators
+================================================================================
+                                                                                              selected
+Logistic Regression  Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]
+Linear SVC           Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]
+Decision Tree                Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]
+Random Forest                Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]
+
+================================================================================
+4a. PCA explained variance (all 6 components)
+================================================================================
+     explained  cumulative
+PC1     0.3190      0.3190
+PC2     0.3064      0.6254
+PC3     0.1673      0.7927
+PC4     0.1660      0.9587
+PC5     0.0211      0.9798
+PC6     0.0202      1.0000
+
+================================================================================
+4b. PCA loadings of the kept components
+================================================================================
+      Type  Air temperature [K]  Process temperature [K]  Rotational speed [rpm]  Torque [Nm]  Tool wear [min]
+PC1 -0.008                0.502                    0.503                   0.502       -0.493            0.002
+PC2 -0.004                0.498                    0.497                  -0.498        0.507            0.015
+PC3  0.713                0.014                    0.007                  -0.001        0.004           -0.701
+PC4  0.702                0.001                   -0.004                   0.003       -0.010            0.713
+
+================================================================================
+6a. FULL SCREENING TABLE (all strategies x all models)
+================================================================================
+       Feature selection                Model                                                                                                  Features  Validation failure F1  Validation failure recall  Validation failure precision  Validation balanced accuracy  Validation missed failures  Validation false alarms
+0   No feature selection    Gradient Boosting  Type, Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.641026                   0.490196                      0.925926                      0.744408                          26                        2
+1   No feature selection        Random Forest  Type, Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.631579                   0.470588                      0.960000                      0.734949                          27                        1
+2   No feature selection                  MLP  Type, Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.620000                   0.607843                      0.632653                      0.797710                          20                       18
+3   No feature selection        Decision Tree  Type, Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.608696                   0.549020                      0.682927                      0.770024                          23                       13
+4   No feature selection                  SVC  Type, Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.424870                   0.803922                      0.288732                      0.867109                          10                      101
+5   No feature selection  Logistic Regression  Type, Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.223565                   0.725490                      0.132143                      0.778894                          14                      243
+6         Drop Type only    Gradient Boosting        Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.650000                   0.509804                      0.896552                      0.753867                          25                        3
+7         Drop Type only        Decision Tree        Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.608696                   0.549020                      0.682927                      0.770024                          23                       13
+8         Drop Type only                  MLP        Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.595238                   0.490196                      0.757576                      0.742338                          26                        8
+9         Drop Type only        Random Forest        Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.567568                   0.411765                      0.913043                      0.705192                          30                        2
+10        Drop Type only                  SVC        Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.444444                   0.823529                      0.304348                      0.878638                           9                       96
+11        Drop Type only  Logistic Regression        Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.225610                   0.725490                      0.133574                      0.779929                          14                      240
+12                 ANOVA        Decision Tree                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.426966                   0.372549                      0.500000                      0.679718                          32                       19
+13                 ANOVA                  MLP                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.426667                   0.313725                      0.666667                      0.654102                          35                        8
+14                 ANOVA    Gradient Boosting                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.422535                   0.294118                      0.750000                      0.645333                          36                        5
+15                 ANOVA        Random Forest                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.416667                   0.294118                      0.714286                      0.644988                          36                        6
+16                 ANOVA                  SVC                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.377682                   0.862745                      0.241758                      0.883754                           7                      138
+17                 ANOVA  Logistic Regression                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.196532                   0.666667                      0.115254                      0.743271                          17                      261
+18   Pearson correlation        Decision Tree                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.426966                   0.372549                      0.500000                      0.679718                          32                       19
+19   Pearson correlation                  MLP                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.426667                   0.313725                      0.666667                      0.654102                          35                        8
+20   Pearson correlation    Gradient Boosting                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.422535                   0.294118                      0.750000                      0.645333                          36                        5
+21   Pearson correlation        Random Forest                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.416667                   0.294118                      0.714286                      0.644988                          36                        6
+22   Pearson correlation                  SVC                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.377682                   0.862745                      0.241758                      0.883754                           7                      138
+23   Pearson correlation  Logistic Regression                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.196532                   0.666667                      0.115254                      0.743271                          17                      261
+24         Adapted Lasso        Random Forest                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.583333                   0.411765                      1.000000                      0.705882                          30                        0
+25         Adapted Lasso    Gradient Boosting                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.571429                   0.431373                      0.846154                      0.714306                          29                        4
+26         Adapted Lasso                  MLP                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.543210                   0.431373                      0.733333                      0.712926                          29                        8
+27         Adapted Lasso        Decision Tree                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.531915                   0.490196                      0.581395                      0.738887                          26                       18
+28         Adapted Lasso                  SVC                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.323404                   0.745098                      0.206522                      0.822169                          13                      146
+29         Adapted Lasso  Logistic Regression                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.214724                   0.686275                      0.127273                      0.760322                          16                      240
+30     Forward selection        Decision Tree                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.426966                   0.372549                      0.500000                      0.679718                          32                       19
+31     Forward selection                  MLP                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.426667                   0.313725                      0.666667                      0.654102                          35                        8
+32     Forward selection    Gradient Boosting                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.422535                   0.294118                      0.750000                      0.645333                          36                        5
+33     Forward selection        Random Forest                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.416667                   0.294118                      0.714286                      0.644988                          36                        6
+34     Forward selection                  SVC                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.377682                   0.862745                      0.241758                      0.883754                           7                      138
+35     Forward selection  Logistic Regression                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.196532                   0.666667                      0.115254                      0.743271                          17                      261
+36    Backward selection        Random Forest                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.583333                   0.411765                      1.000000                      0.705882                          30                        0
+37    Backward selection    Gradient Boosting                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.571429                   0.431373                      0.846154                      0.714306                          29                        4
+38    Backward selection                  MLP                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.543210                   0.431373                      0.733333                      0.712926                          29                        8
+39    Backward selection        Decision Tree                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.531915                   0.490196                      0.581395                      0.738887                          26                       18
+40    Backward selection                  SVC                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.323404                   0.745098                      0.206522                      0.822169                          13                      146
+41    Backward selection  Logistic Regression                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.214724                   0.686275                      0.127273                      0.760322                          16                      240
+42                   RFE        Random Forest                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.583333                   0.411765                      1.000000                      0.705882                          30                        0
+43                   RFE    Gradient Boosting                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.571429                   0.431373                      0.846154                      0.714306                          29                        4
+44                   RFE                  MLP                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.543210                   0.431373                      0.733333                      0.712926                          29                        8
+45                   RFE        Decision Tree                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.531915                   0.490196                      0.581395                      0.738887                          26                       18
+46                   RFE                  SVC                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.323404                   0.745098                      0.206522                      0.822169                          13                      146
+47                   RFE  Logistic Regression                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.214724                   0.686275                      0.127273                      0.760322                          16                      240
+48                   PCA    Gradient Boosting                                                                                              4 components               0.388889                   0.274510                      0.666667                      0.634839                          37                        7
+49                   PCA                  MLP                                                                                              4 components               0.323529                   0.215686                      0.647059                      0.605773                          40                        6
+50                   PCA        Random Forest                                                                                              4 components               0.297297                   0.215686                      0.478261                      0.603702                          40                       12
+51                   PCA                  SVC                                                                                              4 components               0.276094                   0.803922                      0.166667                      0.831222                          10                      205
+52                   PCA        Decision Tree                                                                                              4 components               0.229167                   0.215686                      0.244444                      0.596111                          40                       34
+53                   PCA  Logistic Regression                                                                                              4 components               0.131579                   0.686275                      0.072765                      0.689238                          16                      446
+
+================================================================================
+6b. BEST MODEL PER FEATURE STRATEGY
+================================================================================
+      Feature selection              Model                                                                                                  Features  Validation failure F1  Validation failure recall  Validation failure precision  Validation balanced accuracy  Validation missed failures  Validation false alarms
+0        Drop Type only  Gradient Boosting        Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.650000                   0.509804                      0.896552                      0.753867                          25                        3
+1  No feature selection  Gradient Boosting  Type, Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.641026                   0.490196                      0.925926                      0.744408                          26                        2
+2         Adapted Lasso      Random Forest                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.583333                   0.411765                      1.000000                      0.705882                          30                        0
+3    Backward selection      Random Forest                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.583333                   0.411765                      1.000000                      0.705882                          30                        0
+4                   RFE      Random Forest                         Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]               0.583333                   0.411765                      1.000000                      0.705882                          30                        0
+5                 ANOVA      Decision Tree                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.426966                   0.372549                      0.500000                      0.679718                          32                       19
+6   Pearson correlation      Decision Tree                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.426966                   0.372549                      0.500000                      0.679718                          32                       19
+7     Forward selection      Decision Tree                                 Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.426966                   0.372549                      0.500000                      0.679718                          32                       19
+8                   PCA  Gradient Boosting                                                                                              4 components               0.388889                   0.274510                      0.666667                      0.634839                          37                        7
+
+================================================================================
+6c. TOP 3 CANDIDATES SENT TO TUNING (pre-tuning validation scores)
+================================================================================
+      Feature selection              Model                                                                                                  Features  Validation failure F1  Validation failure recall  Validation failure precision  Validation balanced accuracy  Validation missed failures  Validation false alarms
+0        Drop Type only  Gradient Boosting        Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.650000                   0.509804                      0.896552                      0.753867                          25                        3
+1  No feature selection  Gradient Boosting  Type, Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.641026                   0.490196                      0.925926                      0.744408                          26                        2
+2  No feature selection      Random Forest  Type, Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]               0.631579                   0.470588                      0.960000                      0.734949                          27                        1
+
+================================================================================
+7a. 5-FOLD CV TUNING ON TRAINING SPLIT
+================================================================================
+      Feature selection              Model                                                                        Best parameters  CV F1 mean  CV F1 std  CV recall mean  CV precision mean  CV balanced accuracy mean  CV train F1 mean  Number of grid combinations
+0  No feature selection  Gradient Boosting          {'learning_rate': 0.1, 'max_depth': 5, 'n_estimators': 200, 'subsample': 1.0}    0.767065   0.070738        0.675177           0.899437                   0.836258               1.0                           16
+1        Drop Type only  Gradient Boosting          {'learning_rate': 0.1, 'max_depth': 5, 'n_estimators': 200, 'subsample': 1.0}    0.738051   0.061223        0.670922           0.828423                   0.833021               1.0                           16
+2  No feature selection      Random Forest  {'class_weight': None, 'max_depth': None, 'min_samples_leaf': 1, 'n_estimators': 200}    0.711439   0.088718        0.590691           0.905554                   0.794311               1.0                           16
+
+================================================================================
+7b. EXACT BEST PARAMETERS (copy into Table 3)
+================================================================================
+{
+  "Gradient Boosting": {
+    "learning_rate": 0.1,
+    "max_depth": 5,
+    "n_estimators": 200,
+    "subsample": 1.0
+  },
+  "Random Forest": {
+    "class_weight": null,
+    "max_depth": null,
+    "min_samples_leaf": 1,
+    "n_estimators": 200
+  }
+}
+
+================================================================================
+7c. TUNED FINALISTS ON VALIDATION SPLIT
+================================================================================
+      Feature selection              Model                                                                                                  Features  Validation F1  Validation recall  Validation precision  Validation balanced accuracy  Validation missed failures  Validation false alarms
+0  No feature selection  Gradient Boosting  Type, Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]       0.712644           0.607843              0.861111                      0.802196                          20                        5
+1  No feature selection      Random Forest  Type, Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]       0.675000           0.529412              0.931034                      0.764016                          24                        2
+2        Drop Type only  Gradient Boosting        Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]       0.674699           0.549020              0.875000                      0.773130                          23                        4
+
+================================================================================
+8. FINAL TEST SET (threshold 0.5)
+================================================================================
+                        Model    TN  FP  FN  TP      F1  Recall  Precision  Balanced acc  ROC-AUC  Average precision (PR-AUC)
+0  Gradient Boosting (winner)  1446   3  20  31  0.7294  0.6078     0.9118        0.8029   0.9727                      0.7867
+1      Stacking (Tuned Top 3)  1447   2  20  31  0.7381  0.6078     0.9394        0.8032   0.9619                      0.7464
+
+================================================================================
+8b. Classification report: winner
+================================================================================
+              precision    recall  f1-score   support
+
+           0     0.9864    0.9979    0.9921      1449
+           1     0.9118    0.6078    0.7294        51
+
+    accuracy                         0.9847      1500
+   macro avg     0.9491    0.8029    0.8608      1500
+weighted avg     0.9838    0.9847    0.9832      1500
+
+
+================================================================================
+8c. Classification report: stacking
+================================================================================
+              precision    recall  f1-score   support
+
+           0     0.9864    0.9986    0.9925      1449
+           1     0.9394    0.6078    0.7381        51
+
+    accuracy                         0.9853      1500
+   macro avg     0.9629    0.8032    0.8653      1500
+weighted avg     0.9848    0.9853    0.9838      1500
+

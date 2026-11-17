@@ -1,0 +1,7 @@
+model,caught@0.5,false_alarms@0.5,threshold_for_recall>=0.80,caught@that_threshold,false_alarms@that_threshold,val_PR_AUC
+GB default (as screened),25/51,2,0.072,41/51,40,0.769
+GB + balanced weights,42/51,57,0.731,41/51,30,0.686
+"RF balanced, leaf 1 (as screened)",24/51,1,0.07,41/51,74,0.74
+"RF balanced, leaf 5",34/51,22,0.303,41/51,58,0.71
+SVC balanced (as screened),20/51,13,0.078,41/51,78,0.536
+LR balanced (as screened),37/51,243,0.321,41/51,413,0.264

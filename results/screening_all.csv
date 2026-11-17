@@ -1,0 +1,55 @@
+Feature selection,Model,Features,Validation failure F1,Validation failure recall,Validation failure precision,Validation balanced accuracy,Validation missed failures,Validation false alarms
+No feature selection,Gradient Boosting,"Type, Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.6410256410256411,0.49019607843137253,0.9259259259259259,0.7444079080907725,26,2
+No feature selection,Random Forest,"Type, Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.631578947368421,0.47058823529411764,0.96,0.7349490520846019,27,1
+No feature selection,MLP,"Type, Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.62,0.6078431372549019,0.6326530612244898,0.7977103885032273,20,18
+No feature selection,Decision Tree,"Type, Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.6086956521739131,0.5490196078431373,0.6829268292682927,0.7700239516096294,23,13
+No feature selection,SVC,"Type, Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.42487046632124353,0.803921568627451,0.2887323943661972,0.867109162505582,10,101
+No feature selection,Logistic Regression,"Type, Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.22356495468277945,0.7254901960784313,0.13214285714285715,0.7788941663621971,14,243
+Drop Type only,Gradient Boosting,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.65,0.5098039215686274,0.896551724137931,0.7538667640969431,25,3
+Drop Type only,Decision Tree,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.6086956521739131,0.5490196078431373,0.6829268292682927,0.7700239516096294,23,13
+Drop Type only,MLP,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.5952380952380952,0.49019607843137253,0.7575757575757576,0.7423375147160314,26,8
+Drop Type only,Random Forest,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.5675675675675675,0.4117647058823529,0.9130434782608695,0.7051922218162627,30,2
+Drop Type only,SVC,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.4444444444444444,0.8235294117647058,0.30434782608695654,0.8786384118864937,9,96
+Drop Type only,Logistic Regression,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.22560975609756098,0.7254901960784313,0.13357400722021662,0.7799293630495676,14,240
+ANOVA,Decision Tree,"Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.42696629213483145,0.37254901960784315,0.5,0.6797182641172411,32,19
+ANOVA,MLP,"Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.4266666666666667,0.3137254901960784,0.6666666666666666,0.6541022205983843,35,8
+ANOVA,Gradient Boosting,"Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.4225352112676056,0.29411764705882354,0.75,0.6453334957171274,36,5
+ANOVA,Random Forest,"Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.4166666666666667,0.29411764705882354,0.7142857142857143,0.6449884301546706,36,6
+ANOVA,SVC,"Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.3776824034334764,0.8627450980392157,0.24175824175824176,0.8837535014005602,7,138
+ANOVA,Logistic Regression,"Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.19653179190751446,0.6666666666666666,0.1152542372881356,0.7432712215320911,17,261
+Pearson correlation,Decision Tree,"Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.42696629213483145,0.37254901960784315,0.5,0.6797182641172411,32,19
+Pearson correlation,MLP,"Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.4266666666666667,0.3137254901960784,0.6666666666666666,0.6541022205983843,35,8
+Pearson correlation,Gradient Boosting,"Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.4225352112676056,0.29411764705882354,0.75,0.6453334957171274,36,5
+Pearson correlation,Random Forest,"Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.4166666666666667,0.29411764705882354,0.7142857142857143,0.6449884301546706,36,6
+Pearson correlation,SVC,"Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.3776824034334764,0.8627450980392157,0.24175824175824176,0.8837535014005602,7,138
+Pearson correlation,Logistic Regression,"Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.19653179190751446,0.6666666666666666,0.1152542372881356,0.7432712215320911,17,261
+Adapted Lasso,Random Forest,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]",0.5833333333333334,0.4117647058823529,1.0,0.7058823529411764,30,0
+Adapted Lasso,Gradient Boosting,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]",0.5714285714285714,0.43137254901960786,0.8461538461538461,0.7143060122599765,29,4
+Adapted Lasso,MLP,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]",0.5432098765432098,0.43137254901960786,0.7333333333333333,0.712925750010149,29,8
+Adapted Lasso,Decision Tree,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]",0.5319148936170213,0.49019607843137253,0.5813953488372093,0.7388868590914627,26,18
+Adapted Lasso,SVC,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]",0.32340425531914896,0.7450980392156863,0.20652173913043478,0.8221694474891406,13,146
+Adapted Lasso,Logistic Regression,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]",0.2147239263803681,0.6862745098039216,0.12727272727272726,0.7603215199123128,16,240
+Forward selection,Decision Tree,"Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.42696629213483145,0.37254901960784315,0.5,0.6797182641172411,32,19
+Forward selection,MLP,"Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.4266666666666667,0.3137254901960784,0.6666666666666666,0.6541022205983843,35,8
+Forward selection,Gradient Boosting,"Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.4225352112676056,0.29411764705882354,0.75,0.6453334957171274,36,5
+Forward selection,Random Forest,"Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.4166666666666667,0.29411764705882354,0.7142857142857143,0.6449884301546706,36,6
+Forward selection,SVC,"Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.3776824034334764,0.8627450980392157,0.24175824175824176,0.8837535014005602,7,138
+Forward selection,Logistic Regression,"Air temperature [K], Rotational speed [rpm], Torque [Nm], Tool wear [min]",0.19653179190751446,0.6666666666666666,0.1152542372881356,0.7432712215320911,17,261
+Backward selection,Random Forest,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]",0.5833333333333334,0.4117647058823529,1.0,0.7058823529411764,30,0
+Backward selection,Gradient Boosting,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]",0.5714285714285714,0.43137254901960786,0.8461538461538461,0.7143060122599765,29,4
+Backward selection,MLP,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]",0.5432098765432098,0.43137254901960786,0.7333333333333333,0.712925750010149,29,8
+Backward selection,Decision Tree,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]",0.5319148936170213,0.49019607843137253,0.5813953488372093,0.7388868590914627,26,18
+Backward selection,SVC,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]",0.32340425531914896,0.7450980392156863,0.20652173913043478,0.8221694474891406,13,146
+Backward selection,Logistic Regression,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]",0.2147239263803681,0.6862745098039216,0.12727272727272726,0.7603215199123128,16,240
+RFE,Random Forest,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]",0.5833333333333334,0.4117647058823529,1.0,0.7058823529411764,30,0
+RFE,Gradient Boosting,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]",0.5714285714285714,0.43137254901960786,0.8461538461538461,0.7143060122599765,29,4
+RFE,MLP,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]",0.5432098765432098,0.43137254901960786,0.7333333333333333,0.712925750010149,29,8
+RFE,Decision Tree,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]",0.5319148936170213,0.49019607843137253,0.5813953488372093,0.7388868590914627,26,18
+RFE,SVC,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]",0.32340425531914896,0.7450980392156863,0.20652173913043478,0.8221694474891406,13,146
+RFE,Logistic Regression,"Air temperature [K], Process temperature [K], Rotational speed [rpm], Torque [Nm]",0.2147239263803681,0.6862745098039216,0.12727272727272726,0.7603215199123128,16,240
+PCA,Gradient Boosting,4 components,0.3888888888888889,0.27450980392156865,0.6666666666666666,0.6348394430235862,37,7
+PCA,MLP,4 components,0.3235294117647059,0.21568627450980393,0.6470588235294118,0.6057727438801608,40,6
+PCA,Random Forest,4 components,0.2972972972972973,0.21568627450980393,0.4782608695652174,0.6037023505054195,40,12
+PCA,SVC,4 components,0.2760942760942761,0.803921568627451,0.16666666666666666,0.8312223440100679,10,205
+PCA,Decision Tree,4 components,0.22916666666666666,0.21568627450980393,0.24444444444444444,0.5961109081313685,40,34
+PCA,Logistic Regression,4 components,0.13157894736842105,0.6862745098039216,0.07276507276507277,0.6892380140461982,16,446
