@@ -1,12 +1,19 @@
 cff-version: 1.2.0
-message: "If you use this code, please cite it as below. The accompanying paper has been submitted to AUCC 2027."
-title: "A Comparative Study of Feature Reduction Strategies and Machine Learning Classifiers for Industrial Fault Detection"
+message: "If you use this code, please cite the paper below. The paper has been submitted to AUC2 (AUCC) 2027."
+title: "Machine Failure Classification: Feature Reduction Benchmark (code)"
 type: software
 authors:
-  - name: "Udtarakviseth Lay"
+  - family-names: "Lay"
+    given-names: "Udtarakviseth"
     alias: "Viseth101"
-  - name: "Sothea Sokea"
+    affiliation: "Silpakorn University"
+  - family-names: "Sokea"
+    given-names: "Sothea"
     alias: "sotheasokea"
+    affiliation: "Silpakorn University"
+  - family-names: "Aonpong"
+    given-names: "Panyanat"
+    affiliation: "Silpakorn University"
 repository-code: "https://github.com/Viseth101/AUCC-Paper-Machine-Failure-Classification"
 license: MIT
 date-released: "2026-11-17"
@@ -15,3 +22,17 @@ keywords:
   - feature selection
   - imbalanced classification
   - AI4I 2020
+preferred-citation:
+  type: conference-paper
+  title: "A Comparative Benchmark of Feature Reduction Strategies and Classifiers for Imbalanced Machine Failure Detection"
+  authors:
+    - family-names: "Lay"
+      given-names: "Udtarakviseth"
+    - family-names: "Sokea"
+      given-names: "Sothea"
+    - family-names: "Aonpong"
+      given-names: "Panyanat"
+  conference:
+    name: "The 15th Asia Undergraduate Conference on Computing (AUC2) 2027"
+  year: 2027
+  status: submitted
