@@ -10,8 +10,6 @@
 >
 > **Paper results** (seed 2077, held-out test set of 1,500 records): tuned Gradient Boosting reached **F1 0.729** (recall 0.608, 31/51 failures; precision 0.912; 3 false alarms; ROC-AUC 0.973).
 >
-> ⚠️ **Note:** the notebook, script and results below are the earlier course version of this pipeline (different random seed and settings), so their numbers differ from the paper. The final paper pipeline will be added to this repository.
->
 > If you use this code, please cite it via [`CITATION.cff`](./CITATION.cff).
 
 ---
